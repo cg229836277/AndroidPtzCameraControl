@@ -6,6 +6,7 @@
 const char* TAG = "UVCCamera";
 jintArray controlData;
 jint setBeforeAfterData[2];
+//char* controlType;
 
 const char* CONTROL_FLAG_PAN = "Pan (Absolute)";
 const char* CONTROL_FLAG_TILT = "Tilt (Absolute)";
@@ -356,7 +357,8 @@ void yuyv_to_rgb24 (unsigned char *src) {
 
 
 
-void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,jobject thiz,jobject bitmap){
+void
+Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,jobject thiz,jobject bitmap){
 
 	jboolean bo;
 
@@ -398,6 +400,41 @@ void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,
 	}
 
 	AndroidBitmap_unlockPixels(env, bitmap);
+}
+
+void queryControlValue(int controlId){
+	struct v4l2_queryctrl queryStruct;
+	memset(&queryStruct, 0, sizeof(queryStruct));
+	queryStruct.id = controlId;
+
+	int result = xioctl(fd, VIDIOC_QUERYCTRL, &queryStruct);
+	if (result < 0){
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "error reason = %s" , strerror (errno));
+	}else{
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "success = %s , %d , %d , %d , %d, %d,%d" ,
+				queryStruct.name,queryStruct.minimum , queryStruct.maximum , queryStruct.default_value,
+				queryStruct.step , queryStruct.id,queryStruct.flags);
+	}
+}
+
+void stopControlCamera(int controlId){
+	opendevice(0);
+	struct v4l2_ext_control ctrl[1];
+	struct v4l2_ext_controls ctrls;
+	memset(&ctrls, 0, sizeof(ctrls));
+	memset(&ctrl, 0, sizeof(ctrl));
+
+	ctrl[0].id = controlId;
+	ctrl[0].value = 0;
+	//v4l2_ext_controls with list of v4l2_ext_control
+	ctrls.ctrl_class = V4L2_CTRL_CLASS_CAMERA;
+	ctrls.count = 1;
+	ctrls.controls = ctrl;
+	int result = xioctl(fd, VIDIOC_S_EXT_CTRLS, &ctrls);
+	if(result != 0){
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "stop result = %d , reason = %s" , result , strerror (errno));
+	}
+	closedevice();
 }
 
 int getControlValue(int controlId){
@@ -528,6 +565,28 @@ jboolean queryControls(){
 	return canControl == 3;
 }
 
+void queryUserControls(){
+	struct v4l2_queryctrl qctrl;
+	qctrl.id = V4L2_CTRL_CLASS_USER | V4L2_CTRL_FLAG_NEXT_CTRL;
+	int i = ioctl(fd, VIDIOC_QUERYCTRL, &qctrl);
+	while (0 == i){
+		//__android_log_print(ANDROID_LOG_ERROR , TAG , "开始查找");
+		if (V4L2_CTRL_ID2CLASS(qctrl.id) != V4L2_CTRL_CLASS_USER)
+			continue;
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "找到的控制函数是%s" , qctrl.name);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "继续查找");
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "id = %d" , qctrl.id);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "Next_Ctrl = %x" , V4L2_CTRL_FLAG_NEXT_CTRL);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "Camera_Class = %x" , V4L2_CTRL_CLASS_USER);
+		qctrl.id |= V4L2_CTRL_FLAG_NEXT_CTRL;
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "id+ = %x" , qctrl.id);
+		i = ioctl(fd, VIDIOC_QUERYCTRL, &qctrl);
+		if(i != 0){
+			__android_log_print(ANDROID_LOG_ERROR, TAG,"uvcioc ctrl add error: errno=%d (reason=%s)\n", errno,strerror(errno));
+		}
+	}
+}
+
 jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCamera( JNIEnv* env,jobject thiz, jint videoid){
 
 	int ret;
@@ -581,6 +640,59 @@ jboolean Java_org_siprop_android_uvccamera_MainActivity_initDevice(JNIEnv* env,j
 	return result == SUCCESS_LOCAL ? true : false;
 }
 
+jint getCurrentCameraValue(int controlId){
+//	int result0 = opendevice(0);
+//	if(result0 != 0){
+//		__android_log_print(ANDROID_LOG_ERROR , TAG ,"设备打开失败");
+//		return -1;
+//	}
+	struct v4l2_control v4l2_ctrl = { .id = controlId};
+	int result = ioctl(fd, VIDIOC_G_CTRL, &v4l2_ctrl);
+	if(result == 0) {
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"获取当前数值成功 = %d" , v4l2_ctrl.value);
+	}else{
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"获取当前数值失败");
+	}
+//	closedevice();
+	return v4l2_ctrl.value;
+}
+
+jboolean startControlCamera(int controlId , int controlValue){
+//	int result0 = opendevice(0);
+//	if(result0 != 0){
+//		__android_log_print(ANDROID_LOG_ERROR , TAG ,"设备打开失败");
+//		return false;
+//	}
+
+	int curretnValue = getCurrentCameraValue(controlId);
+
+	struct v4l2_control v4l2_ctrl = {
+		.id = controlId,
+		.value = curretnValue + controlValue * 3600
+	};
+	__android_log_print(ANDROID_LOG_ERROR , TAG ,"控制之前的值是 , value = %d" , v4l2_ctrl.value);
+	int result = ioctl(fd, VIDIOC_S_CTRL, &v4l2_ctrl);
+	if(result == 0) {
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"控制成功 , value = %d" , v4l2_ctrl.value);
+	}else{
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"控制失败 , %s" , strerror(errno));
+	}
+
+	struct v4l2_control v4l2_ctrl_stop = {
+		.id = controlId,
+		.value = 0
+	};
+	int result1 = ioctl(fd, VIDIOC_S_CTRL, &v4l2_ctrl_stop);
+	if(result1 == 0) {
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"控制停止成功");
+		return true;
+	}else{
+		__android_log_print(ANDROID_LOG_ERROR , TAG ,"控制停止失败 , %s" , strerror(errno));
+		return false;
+	}
+//	closedevice();
+}
+
 //返回控制是否成功
 jintArray Java_org_siprop_android_uvccamera_MainActivity_startControlCamera(JNIEnv* env,jobject thiz , jint controlId ,jint value){
 	switch (controlId) {
@@ -620,8 +732,13 @@ jintArray Java_org_siprop_android_uvccamera_MainActivity_startControlCamera(JNIE
 
 jint Java_org_siprop_android_uvccamera_MainActivity_getCurrentControlValue(JNIEnv* env,jobject thiz , jint controlId){
 	return getControlValue(controlId);
+//	return getCurrentCameraValue(controlId);
 }
 
+void Java_org_siprop_android_uvccamera_MainActivity_queryControl(JNIEnv* env,jobject thiz){
+//	queryControls();
+	queryUserControls();
+}
 
 jboolean Java_org_siprop_android_uvccamera_MainActivity_isSupportPtz(JNIEnv* env,jobject thiz){
 	return queryControls();

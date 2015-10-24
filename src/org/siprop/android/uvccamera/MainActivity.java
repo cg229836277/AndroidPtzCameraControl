@@ -213,4 +213,5 @@ public class MainActivity extends Activity implements OnClickListener{
     public native int getCurrentControlValue(int controlId);
     public native boolean initDevice();
     public native void queryControl();
+    public native boolean isSupportPtz();
 }

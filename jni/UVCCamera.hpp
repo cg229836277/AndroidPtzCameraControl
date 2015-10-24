@@ -187,7 +187,7 @@ void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,
 jint Java_org_siprop_android_uvccamera_MainActivity_getCurrentControlValue(JNIEnv* env,jobject thiz , jint controlId);
 jintArray Java_org_siprop_android_uvccamera_MainActivity_startControlCamera(JNIEnv* env,jobject thiz , jint controlId ,jint value);
 jboolean Java_org_siprop_android_uvccamera_MainActivity_initDevice(JNIEnv* env,jobject thiz);
-void Java_org_siprop_android_uvccamera_MainActivity_queryControl(JNIEnv* env,jobject thiz);
+jboolean Java_org_siprop_android_uvccamera_MainActivity_isSupportPtz(JNIEnv* env,jobject thiz);
 #ifdef __cplusplus
 }
 #endif
