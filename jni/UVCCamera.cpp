@@ -370,7 +370,8 @@ void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,
 	int height=0;
 
 	if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
-		LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		//LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "AndroidBitmap_getInfo() failed ! error=%d", ret);
 		return;
 	}
 
@@ -381,11 +382,13 @@ void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,
 
 	if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 		LOGE("Bitmap format is not RGBA_8888 !");
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "Bitmap format is not RGBA_8888 !");
 		return;
 	}
 
 	if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixels)) < 0) {
 		LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "AndroidBitmap_lockPixels() failed ! error=%d", ret);
 	}
 
 	colors = (int*)pixels;

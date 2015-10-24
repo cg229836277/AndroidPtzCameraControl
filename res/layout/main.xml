@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@android:color/white" >
 
-    <org.siprop.android.uvccamera.UVCCameraPreview
+    <RelativeLayout
+        android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -17,14 +18,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="上" />
+            android:background="@android:color/white"
+            android:text="上"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="左" />
+            android:background="@android:color/white"
+            android:text="左"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/down"
@@ -32,7 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="下" />
+            android:background="@android:color/white"
+            android:text="下"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/right"
@@ -40,14 +47,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="右" />
+            android:background="@android:color/white"
+            android:text="右"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="结果" />
+            android:background="@android:color/white"
+            android:text="结果"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/zoom_in"
@@ -55,7 +66,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/result"
             android:layout_centerInParent="true"
-            android:text="zoom in" />
+            android:background="@android:color/white"
+            android:text="zoom in"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/zoom_out"
@@ -63,7 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/zoom_in"
             android:layout_centerInParent="true"
-            android:text="zoom out" />
+            android:background="@android:color/white"
+            android:text="zoom out"
+            android:textColor="@android:color/black" />
     </RelativeLayout>
 
 </FrameLayout>

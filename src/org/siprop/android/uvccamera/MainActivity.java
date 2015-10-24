@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,10 +60,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-//		String[] command = {"chmod 777 /dev/video0" , "chmod 777 /dev/bus/usb/*"};
-//				
-//		CommandResult result = ShellUtils.execCommand(command, true);
-//		Log.e(TAG, "result是：" + result.successMsg);
+		RelativeLayout view = (RelativeLayout)findViewById(R.id.video_view);
+		UVCCameraPreview childView = new UVCCameraPreview(this);
+		view.addView(childView);
 		
 		upDownArray = new int[]{0,0};
 		leftRightArray = new int[]{0,0};

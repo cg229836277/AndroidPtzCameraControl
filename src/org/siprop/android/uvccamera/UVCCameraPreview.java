@@ -1,7 +1,10 @@
 package org.siprop.android.uvccamera;
 
+import org.siprop.android.uvccamera.ShellUtils.CommandResult;
+
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Bitmap;
@@ -24,8 +27,8 @@ class UVCCameraPreview extends SurfaceView implements SurfaceHolder.Callback, Ru
 	// /dev/videoX with Required 666 permission
 	private int cameraId = 0;
 	
-	static final int IMG_WIDTH = 640;
-	static final int IMG_HEIGHT = 480;
+	static final int IMG_WIDTH = 320;
+	static final int IMG_HEIGHT = 240;
 
 	// The following variables are used to draw camera images.
     private int winWidth = 0;
@@ -48,6 +51,11 @@ class UVCCameraPreview extends SurfaceView implements SurfaceHolder.Callback, Ru
 		super(context);
 		this.context = context;
 		setFocusable(true);
+		
+		String[] command = {"chmod 777 /dev/video0" , "chmod 777 /dev/bus/usb/*"};
+		
+		CommandResult result = ShellUtils.execCommand(command, true);
+		Log.e(TAG, "result是：" + result.successMsg);
 		
 		holder = getHolder();
 		holder.addCallback(this);
