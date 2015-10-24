@@ -7,6 +7,8 @@ const char* TAG = "UVCCamera";
 jintArray controlData;
 jint setBeforeAfterData[2];
 
+int ret = -1;
+
 const char* CONTROL_FLAG_PAN = "Pan (Absolute)";
 const char* CONTROL_FLAG_TILT = "Tilt (Absolute)";
 const char* CONTROL_FLAG_ZOOM = "Zoom (Absolute)";
@@ -357,10 +359,7 @@ void yuyv_to_rgb24 (unsigned char *src) {
 
 
 void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,jobject thiz,jobject bitmap){
-
 	jboolean bo;
-
-
 	AndroidBitmapInfo  info;
 	void*              pixels;
 	int                ret;
@@ -529,9 +528,6 @@ jboolean queryControls(){
 }
 
 jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCamera( JNIEnv* env,jobject thiz, jint videoid){
-
-	int ret;
-
 	ret = opendevice(videoid);
 
 	if(ret != ERROR_LOCAL){
@@ -577,8 +573,7 @@ Java_org_siprop_android_uvccamera_UVCCameraPreview_stopCamera(JNIEnv* env,jobjec
 }
 
 jboolean Java_org_siprop_android_uvccamera_MainActivity_initDevice(JNIEnv* env,jobject thiz){
-	int result = opendevice(0);
-	return result == SUCCESS_LOCAL ? true : false;
+	return ret == 0 ? true : false;
 }
 
 //返回控制是否成功

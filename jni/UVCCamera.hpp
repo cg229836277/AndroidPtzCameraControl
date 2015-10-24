@@ -180,7 +180,7 @@ int closedevice(void);
 void yuyv_to_rgb24 (unsigned char *src);
 
 jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCamera( JNIEnv* env,jobject thiz, jint videoid);
-jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCameraWithBase( JNIEnv* env,jobject thiz, jint videoid, jint videobase);
+//jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCameraWithBase( JNIEnv* env,jobject thiz, jint videoid, jint videobase);
 void Java_org_siprop_android_uvccamera_UVCCameraPreview_processCamera( JNIEnv* env,jobject thiz);
 void Java_org_siprop_android_uvccamera_UVCCameraPreview_stopCamera(JNIEnv* env,jobject thiz);
 void Java_org_siprop_android_uvccamera_UVCCameraPreview_pixeltobmp( JNIEnv* env,jobject thiz,jobject bitmap);

@@ -27,8 +27,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	private final int CONTROL_CAMERA_ZOOM = 10094861;
 	
 	//左右转动的角度是170，每移动一次的值是34300，为10度
-	private final int PAN_PER_LEFT = -10;
-	private final int PAN_PER_RIGHT = 10;
+	private final int PAN_PER_LEFT = 10;
+	private final int PAN_PER_RIGHT = -10;
 	//上下转动的角度是-30 ~ +90
 	//向下每次转动的角度是10度
 	private final int TILT_PER_DOWN = -5;
