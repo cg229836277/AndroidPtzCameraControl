@@ -1,13 +1,10 @@
 package org.siprop.android.uvccamera;
 
-import org.siprop.android.uvccamera.ShellUtils.CommandResult;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,16 +74,16 @@ public class MainActivity extends Activity implements OnClickListener{
 		
 		resultView = (TextView)findViewById(R.id.result);
 		
-		if(!initDevice()){
-			Toast.makeText(this, "设备打开失败", Toast.LENGTH_SHORT).show();
-		}else{
+//		if(!initDevice()){
+//			Toast.makeText(this, "设备打开失败", Toast.LENGTH_SHORT).show();
+//		}else{
 			up.setOnClickListener(this);
 			down.setOnClickListener(this);
 			left.setOnClickListener(this);
 			right.setOnClickListener(this);
 			zoomIn.setOnClickListener(this);
 			zoomOut.setOnClickListener(this);
-		}
+//		}
 	}
 
 	@Override

@@ -34,12 +34,15 @@ int opendevice(int i) {
 	sprintf(dev_name,"/dev/video%d",i);
 
 	if (-1 == stat (dev_name, &st)) {
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "Cannot identify '%s': %d, %s", dev_name, errno, strerror (errno));
 		LOGE("Cannot identify '%s': %d, %s", dev_name, errno, strerror (errno));
 		return ERROR_LOCAL;
 	}
 	LOGE("%s device is ", dev_name);
+	__android_log_print(ANDROID_LOG_ERROR , TAG , "device is %s", dev_name);
 	if (!S_ISCHR (st.st_mode)) {
 		LOGE("%s is no device", dev_name);
+		__android_log_print(ANDROID_LOG_ERROR , TAG , "%s is no device", dev_name);
 		return ERROR_LOCAL;
 	}
 
@@ -226,7 +229,7 @@ int readframeonce(void) {
 		}
 
 		if (0 == r) {
-			LOGE("select timeout");
+			//LOGE("select timeout");
 			return ERROR_LOCAL;
 
 		}
@@ -531,6 +534,7 @@ jboolean queryControls(){
 }
 
 jint Java_org_siprop_android_uvccamera_UVCCameraPreview_prepareCamera( JNIEnv* env,jobject thiz, jint videoid){
+	__android_log_print(ANDROID_LOG_ERROR , TAG , "开始打开摄像头");
 	ret = opendevice(videoid);
 
 	if(ret != ERROR_LOCAL){
